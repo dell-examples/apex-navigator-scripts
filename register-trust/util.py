@@ -104,11 +104,16 @@ def registerTrust(dellAuthToken, systemType, systemId, baseUrl, systemAuthToken)
         exit(1) # Exit with error
 
     if(response.status_code < 200 or response.status_code >= 300):    
-        jsonResponse = response.json()
-        print(f"Error: {jsonResponse['messages'][0]['message']}")
-        print(f"Error code: {jsonResponse['messages'][0]['code']}")
-        exit(1) # Exit with error
+        try:
+            jsonResponse = response.json()
+            print(f"Error: {jsonResponse['messages'][0]['message']}")
+            print(f"Error code: {jsonResponse['messages'][0]['code']}")
+            exit(1) # Exit with error
+        except Exception as e:
+            print(f"Error: Failed to register the trust.")
+            print(response.text)
+            exit(1) # Exit with error
 
-    if(response.status_code < 200 or response.status_code >= 204):    
+    if(response.status_code > 200 or response.status_code <= 204):    
         print(f"Trust is successfully registered with the system {systemId}")
         exit()
